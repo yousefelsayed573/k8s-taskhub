@@ -1,0 +1,44 @@
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: taskhub-job-parallel-one
+  namespace: taskhub
+  labels:
+    app: taskhub
+    component: batch-job
+    environment: lab
+
+spec:
+  parallelism: 3
+  # completions intentionally omitted
+  backoffLimit: 2
+
+  template:
+    metadata:
+      labels:
+        app: taskhub
+        component: batch-job
+        environment: lab
+
+    spec:
+      restartPolicy: Never
+
+      containers:
+        - name: worker
+          image: busybox:1.36
+
+          command: ["sh", "-c"]
+          args:
+            - |
+              echo "Worker $(hostname) started"
+              sleep 30
+              echo "Worker $(hostname) finished"
+
+          resources:
+            requests:
+              cpu: "5m"
+              memory: "8Mi"
+            limits:
+              cpu: "100m"
+              memory: "32Mi"

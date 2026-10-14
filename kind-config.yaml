@@ -1,0 +1,26 @@
+# TaskHub Kubernetes Cluster
+# 1 control-plane + 2 workers
+
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+
+nodes:
+  - role: control-plane
+    image: kindest/node:v1.37.0
+
+    extraPortMappings:
+      - containerPort: 30080
+        hostPort: 8080
+        listenAddress: "127.0.0.1"
+        protocol: TCP
+
+      - containerPort: 30081
+        hostPort: 8081
+        listenAddress: "127.0.0.1"
+        protocol: TCP
+
+  - role: worker
+    image: kindest/node:v1.37.0
+
+  - role: worker
+    image: kindest/node:v1.37.0

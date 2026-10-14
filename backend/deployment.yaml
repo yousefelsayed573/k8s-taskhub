@@ -1,0 +1,73 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: taskhub-backend
+  namespace: taskhub
+  labels:
+    app: taskhub
+    component: backend
+    environment: lab
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: taskhub
+      component: backend
+
+  template:
+    metadata:
+      labels:
+        app: taskhub
+        component: backend
+        environment: lab
+
+    spec:
+      containers:
+        - name: backend
+          image: hashicorp/http-echo:1.0.0
+
+          args:
+            - "-listen=:5678"
+            - "-text=TaskHub Backend API"
+
+          ports:
+            - name: http
+              containerPort: 5678
+
+          envFrom:
+            - configMapRef:
+                name: taskhub-config
+            - secretRef:
+                name: taskhub-secret
+
+          resources:
+            requests:
+              cpu: "25m"
+              memory: "16Mi"
+            limits:
+              cpu: "200m"
+              memory: "64Mi"
+
+          startupProbe:
+            httpGet:
+              path: /
+              port: http
+            periodSeconds: 5
+            failureThreshold: 12
+
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            periodSeconds: 5
+            timeoutSeconds: 2
+
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 2

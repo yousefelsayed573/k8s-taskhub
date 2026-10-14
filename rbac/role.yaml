@@ -1,0 +1,18 @@
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: taskhub-pod-reader-role
+  namespace: taskhub
+  labels:
+    app: taskhub
+    component: security
+    environment: lab
+
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs:
+      - get
+      - list
+      - watch

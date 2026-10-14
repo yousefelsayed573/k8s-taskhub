@@ -1,0 +1,96 @@
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: taskhub-db
+  namespace: taskhub
+  labels:
+    app: taskhub
+    component: database
+    environment: lab
+
+spec:
+  serviceName: taskhub-db-headless
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: taskhub
+      component: database
+
+  template:
+    metadata:
+      labels:
+        app: taskhub
+        component: database
+        environment: lab
+
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:16-alpine
+
+          ports:
+            - name: postgres
+              containerPort: 5432
+
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: taskhub-secret
+                  key: DATABASE_USERNAME
+
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: taskhub-secret
+                  key: DATABASE_PASSWORD
+
+            - name: POSTGRES_DB
+              value: taskhub
+
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+
+          volumeMounts:
+            - name: db-data
+              mountPath: /var/lib/postgresql/data
+
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "384Mi"
+
+          startupProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - 'pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB"'
+            periodSeconds: 5
+            failureThreshold: 24
+
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - 'pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB"'
+            periodSeconds: 5
+
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - 'pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB"'
+            periodSeconds: 10
+
+      volumes:
+        - name: db-data
+          persistentVolumeClaim:
+            claimName: taskhub-db-pvc

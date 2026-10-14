@@ -1,0 +1,45 @@
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: taskhub-job-single
+  namespace: taskhub
+  labels:
+    app: taskhub
+    component: batch-job
+    environment: lab
+
+spec:
+  completions: 1
+  parallelism: 1
+  backoffLimit: 2
+
+  template:
+    metadata:
+      labels:
+        app: taskhub
+        component: batch-job
+        environment: lab
+
+    spec:
+      restartPolicy: Never
+
+      containers:
+        - name: task
+          image: busybox:1.36
+
+          command:
+            - sh
+            - -c
+            - |
+              echo "TaskHub single Job started"
+              sleep 3
+              echo "TaskHub single Job completed"
+
+          resources:
+            requests:
+              cpu: "5m"
+              memory: "8Mi"
+            limits:
+              cpu: "100m"
+              memory: "32Mi"

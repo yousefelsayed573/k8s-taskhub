@@ -1,0 +1,33 @@
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+
+metadata:
+  name: taskhub-ingress
+  namespace: taskhub
+  labels:
+    app: taskhub
+    component: networking
+    environment: lab
+
+spec:
+  ingressClassName: traefik
+
+  rules:
+    - http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: taskhub-backend
+                port:
+                  number: 5678
+
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: taskhub-frontend
+                port:
+                  number: 80

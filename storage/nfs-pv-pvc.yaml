@@ -1,0 +1,38 @@
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: taskhub-nfs-pv
+  labels:
+    app: taskhub
+    component: storage
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ""
+  mountOptions:
+    - nfsvers=4.1
+  nfs:
+    server: 192.168.244.55
+    path: /srv/taskhub-nfs
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: taskhub-nfs-pvc
+  namespace: taskhub
+  labels:
+    app: taskhub
+    component: storage
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  volumeName: taskhub-nfs-pv
+  resources:
+    requests:
+      storage: 1Gi

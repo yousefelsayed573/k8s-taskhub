@@ -1,0 +1,44 @@
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: taskhub-job-multiple
+  namespace: taskhub
+  labels:
+    app: taskhub
+    component: batch-job
+    environment: lab
+
+spec:
+  completions: 6
+  parallelism: 2
+  backoffLimit: 2
+
+  template:
+    metadata:
+      labels:
+        app: taskhub
+        component: batch-job
+        environment: lab
+
+    spec:
+      restartPolicy: Never
+
+      containers:
+        - name: worker
+          image: busybox:1.36
+
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              echo "Task started in Pod: $(hostname)"
+              sleep 20
+              echo "Task completed in Pod: $(hostname)"
+
+          resources:
+            requests:
+              cpu: "5m"
+              memory: "8Mi"
+            limits:
+              cpu: "100m"
+              memory: "32Mi"
