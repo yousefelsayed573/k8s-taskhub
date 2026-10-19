@@ -26,6 +26,29 @@ This is an infrastructure demonstration, not a complete TaskHub
 application. The frontend uses NGINX, and the backend uses a
 simple HTTP echo container.
 
+## Evidence at a Glance
+
+The screenshots below were extracted from my completed Kubernetes submission
+report. They document specific observed results from the local lab; they are
+not screenshots of a currently running public deployment.
+
+| Validation | Evidence |
+|---|---|
+| Three-node kind cluster | [Ready cluster nodes](screenshots/cluster-nodes-ready.png) |
+| Deployments, StatefulSet, DaemonSet and CronJob | [Workload status](screenshots/workload-status.png) |
+| Services, Ingress and bound storage | [Networking and PVC inventory](screenshots/networking-and-storage.png) |
+| Frontend and backend HTTP reachability | [HTTP 200 responses](screenshots/ingress-http-responses.png) |
+| PostgreSQL test record | [Database query](screenshots/postgresql-test-row.png) |
+| NFS shared file access | [Writer and reader output](screenshots/nfs-shared-file.png) |
+| Batch and scheduled work | [Completed Jobs and maintenance logs](screenshots/jobs-and-cronjob.png) |
+| RBAC least-privilege checks | [Allowed and denied actions](screenshots/rbac-authorization.png) |
+| Frontend Pod replacement | [Pod deletion and self-healing](screenshots/frontend-self-healing.png) |
+| Readiness failure and subsequent healthy state | [Not-ready Pod](screenshots/readiness-not-ready.png) · [Recovered rollout](screenshots/readiness-recovered.png) |
+
+The complete [submission report](reports/TaskHub_Kubernetes_YousefElsayed.pdf)
+provides context for these captures. For what the images **do not** prove,
+see [Evidence and Limitations](docs/evidence-and-limitations.md).
+
 ## 2. Architecture
 
 ```mermaid
